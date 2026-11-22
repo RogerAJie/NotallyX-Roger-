@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="personal_app_name">我的记事本</string>
+    <string name="personal_memos">记事本</string>
+    <string name="personal_tasks">To-do List</string>
+    <string name="personal_add">新增</string>
+    <string name="personal_back">返回</string>
+    <string name="personal_save">保存</string>
+    <string name="personal_title_hint">标题（可不填）</string>
+    <string name="personal_body_hint">在这里记录内容…</string>
+    <string name="personal_mark_complete">标记待办完成</string>
+    <string name="personal_empty_memos">还没有记录，点右下角 + 新建记事本</string>
+    <string name="personal_empty_tasks">还没有待办事项，点右下角 + 添加</string>
+    <string name="personal_new_task">新增待办事项</string>
+    <string name="personal_edit_task">编辑待办事项</string>
+    <string name="personal_task_hint">输入待办内容</string>
+    <string name="personal_delete">删除</string>
+    <string name="personal_delete_memo_confirm">确定删除这条记事吗？</string>
+    <string name="personal_delete_task_confirm">确定删除这条待办事项吗？</string>
+    <string name="personal_cancel">取消</string>
+</resources>
