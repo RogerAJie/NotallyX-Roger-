@@ -48,6 +48,8 @@ class PersonalMemoEditorActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        // Persist first so a rotation cannot create a duplicate new memo.
+        persist()
         outState.putLong(STATE_ID, memoId)
         super.onSaveInstanceState(outState)
     }
