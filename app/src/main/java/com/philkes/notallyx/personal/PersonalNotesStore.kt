@@ -70,7 +70,7 @@ class PersonalNotesStore(context: Context) :
 
     fun saveMemo(id: Long?, enteredTitle: String, enteredBody: String): Long {
         val body = enteredBody.trimEnd()
-        val title = enteredTitle.trim().ifBlank { titleFromFirstSentence(body) }
+        val title = enteredTitle.trim() // A blank title is displayed from the first sentence.
         val values = ContentValues().apply {
             put("title", title)
             put("body", body)
