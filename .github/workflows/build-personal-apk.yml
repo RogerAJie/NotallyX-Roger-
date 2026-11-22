@@ -16,6 +16,10 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: personal-apk-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   android:
     runs-on: ubuntu-latest
