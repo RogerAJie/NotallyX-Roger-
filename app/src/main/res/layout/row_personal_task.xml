@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="57dp"
+    android:orientation="horizontal"
+    android:paddingStart="22dp"
+    android:paddingEnd="23dp">
+
+    <TextView
+        android:id="@+id/TaskCheckbox"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="13dp"
+        android:background="@drawable/personal_circle_empty"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="@string/personal_mark_complete"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/TaskBody"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
+        android:textColor="#292929"
+        android:textSize="16sp" />
+</LinearLayout>

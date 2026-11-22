@@ -1,0 +1,69 @@
+name: Build personal notes APK
+
+on:
+  push:
+    branches:
+      - feature/simple-notes-and-todos
+    paths:
+      - "personal-android/**"
+      - "app/**"
+      - "gradle/**"
+      - "gradle.properties"
+      - "build.gradle.kts"
+      - "settings.gradle.kts"
+      - ".github/workflows/build-personal-apk.yml"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: personal-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Configure Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools'
+
+      - name: Configure Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build debug APK
+        run: ./gradlew -p personal-android :app:assembleDebug --stacktrace
+
+      - name: Upload installable APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Personal-Notes-debug-APK
+          path: personal-android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+      - name: Publish direct APK download
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="mynotes-v1.0.0"
+          APK="$(find personal-android/app/build/outputs/apk/debug -maxdepth 1 -name '*.apk' -print -quit)"
+          test -n "$APK"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$APK#MyNotes-1.0.0.apk" --clobber
+          else
+            gh release create "$TAG" "$APK#MyNotes-1.0.0.apk" --title "MyNotes 1.0.0" --notes "Simple offline notebook and to-do list. Debug-signed Android APK." --target feature/simple-notes-and-todos
+          fi
