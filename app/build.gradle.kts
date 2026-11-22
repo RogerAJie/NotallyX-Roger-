@@ -21,12 +21,15 @@ plugins {
     alias(libs.plugins.koin.compiler)
 }
 
+val personalReleaseSigningConfigured = listOf("RELEASE_STORE_FILE", "RELEASE_STORE_PASSWORD", "RELEASE_KEY_ALIAS", "RELEASE_KEY_PASSWORD")
+    .all { providers.gradleProperty(it).isPresent }
+
 android {
     namespace = "com.philkes.notallyx"
     compileSdk = libs.versions.compileSdk.get().toInt()
     ndkVersion = libs.versions.ndk.get()
     defaultConfig {
-        applicationId = "com.philkes.notallyx"
+        applicationId = "com.rogerajie.personalnotes"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = project.findProperty("app.versionCode").toString().toInt()
@@ -77,11 +80,13 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-            storeFile = file(providers.gradleProperty("RELEASE_STORE_FILE").get())
-            storePassword = providers.gradleProperty("RELEASE_STORE_PASSWORD").get()
-            keyAlias = providers.gradleProperty("RELEASE_KEY_ALIAS").get()
-            keyPassword = providers.gradleProperty("RELEASE_KEY_PASSWORD").get()
+        if (personalReleaseSigningConfigured) {
+            create("release") {
+                storeFile = file(providers.gradleProperty("RELEASE_STORE_FILE").get())
+                storePassword = providers.gradleProperty("RELEASE_STORE_PASSWORD").get()
+                keyAlias = providers.gradleProperty("RELEASE_KEY_ALIAS").get()
+                keyPassword = providers.gradleProperty("RELEASE_KEY_PASSWORD").get()
+            }
         }
     }
 
@@ -99,7 +104,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            signingConfig = signingConfigs.getByName("release")
+            if (personalReleaseSigningConfigured) signingConfig = signingConfigs.getByName("release")
         }
         create("beta") {
             initWith(getByName("release"))
@@ -142,7 +147,7 @@ android {
 androidComponents {
     onVariants { variant ->
         val versionName = project.findProperty("app.versionName").toString()
-        variant.outputs.forEach { output -> output.outputFileName.set("NotallyX-$versionName.apk") }
+        variant.outputs.forEach { output -> output.outputFileName.set("MyNotes-$versionName.apk") }
 
         val variantName = variant.name
         val variantCapitalized = variantName.replaceFirstChar { it.uppercase() }
