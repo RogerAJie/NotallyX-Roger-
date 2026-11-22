@@ -3,17 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:minHeight="60dp"
+    android:minHeight="57dp"
     android:orientation="horizontal"
-    android:paddingStart="12dp"
-    android:paddingEnd="20dp">
+    android:paddingStart="22dp"
+    android:paddingEnd="23dp">
 
-    <CheckBox
+    <TextView
         android:id="@+id/TaskCheckbox"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:buttonTint="#F28E45"
-        android:contentDescription="@string/personal_mark_complete" />
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="13dp"
+        android:background="@drawable/personal_circle_empty"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="@string/personal_mark_complete"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp" />
 
     <TextView
         android:id="@+id/TaskBody"
@@ -23,8 +29,8 @@
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:textColor="#222222"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp"
+        android:textColor="#292929"
         android:textSize="16sp" />
 </LinearLayout>
