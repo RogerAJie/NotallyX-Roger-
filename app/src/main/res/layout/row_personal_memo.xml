@@ -6,16 +6,16 @@
     android:clickable="true"
     android:focusable="true"
     android:orientation="vertical"
-    android:paddingStart="20dp"
-    android:paddingTop="16dp"
-    android:paddingEnd="20dp"
-    android:paddingBottom="16dp">
+    android:paddingStart="23dp"
+    android:paddingTop="18dp"
+    android:paddingEnd="23dp"
+    android:paddingBottom="17dp">
 
     <TextView
         android:id="@+id/MemoTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#222222"
+        android:textColor="#262626"
         android:textSize="17sp"
         android:textStyle="bold" />
 
@@ -25,13 +25,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
         android:ellipsize="end"
-        android:maxLines="3"
-        android:textColor="#666666"
+        android:maxLines="2"
+        android:textColor="#8A8A8A"
         android:textSize="14sp" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="16dp"
-        android:background="#EEEEEE" />
+        android:background="#EFEFEF" />
 </LinearLayout>
