@@ -20,6 +20,7 @@ import com.google.android.material.tabs.TabLayout
 import com.philkes.notallyx.R
 import com.philkes.notallyx.databinding.ActivityPersonalHomeBinding
 import com.philkes.notallyx.databinding.RowPersonalMemoBinding
+import com.philkes.notallyx.databinding.RowPersonalSectionBinding
 import com.philkes.notallyx.databinding.RowPersonalTaskBinding
 
 /**
@@ -188,37 +189,81 @@ class PersonalHomeActivity : AppCompatActivity() {
     }
 
     private inner class TaskAdapter(private val tasks: List<PersonalTask>) :
-        RecyclerView.Adapter<TaskAdapter.Holder>() {
+        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-        inner class Holder(val row: RowPersonalTaskBinding) : RecyclerView.ViewHolder(row.root)
+        // Two visible groups, exactly like the approved interactive demo.
+        private val rows: List<Any> = buildList {
+            val active = tasks.filterNot { it.completed }
+            val completed = tasks.filter { it.completed }
+            add("未完成 · " + active.size)
+            addAll(active)
+            add("已完成 · " + completed.size)
+            addAll(completed)
+        }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder =
-            Holder(RowPersonalTaskBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        inner class TaskHolder(val row: RowPersonalTaskBinding) :
+            RecyclerView.ViewHolder(row.root)
 
-        override fun getItemCount(): Int = tasks.size
+        inner class SectionHolder(val row: RowPersonalSectionBinding) :
+            RecyclerView.ViewHolder(row.root)
 
-        override fun onBindViewHolder(holder: Holder, position: Int) {
-            val task = tasks[position]
-            holder.row.TaskCheckbox.setOnCheckedChangeListener(null)
-            holder.row.TaskCheckbox.isChecked = task.completed
-            holder.row.TaskBody.text = task.body
-            holder.row.TaskBody.setTextColor(if (task.completed) 0xFFAAAAAA.toInt() else 0xFF222222.toInt())
-            holder.row.TaskBody.paintFlags =
-                if (task.completed) holder.row.TaskBody.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                else holder.row.TaskBody.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
-            holder.row.TaskCheckbox.setOnCheckedChangeListener { _, checked ->
-                store.setTaskCompleted(task.id, checked)
-                refresh()
+        override fun getItemCount(): Int = rows.size
+
+        override fun getItemViewType(position: Int): Int =
+            if (rows[position] is String) SECTION else TASK
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+            val inflater = LayoutInflater.from(parent.context)
+            return if (viewType == SECTION) {
+                SectionHolder(RowPersonalSectionBinding.inflate(inflater, parent, false))
+            } else {
+                TaskHolder(RowPersonalTaskBinding.inflate(inflater, parent, false))
             }
-            holder.row.TaskBody.setOnClickListener { showTaskDialog(task) }
-            holder.row.root.setOnLongClickListener {
-                confirmDeleteTask(task)
-                true
+        }
+
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+            when (holder) {
+                is SectionHolder -> {
+                    holder.row.SectionTitle.text = rows[position] as String
+                    holder.row.SectionDivider.visibility =
+                        if (position == 0) View.GONE else View.VISIBLE
+                }
+                is TaskHolder -> {
+                    val task = rows[position] as PersonalTask
+                    holder.row.TaskCheckbox.text = if (task.completed) "✓" else ""
+                    holder.row.TaskCheckbox.setBackgroundResource(
+                        if (task.completed) R.drawable.personal_circle_done
+                        else R.drawable.personal_circle_empty
+                    )
+                    holder.row.TaskBody.text = task.body
+                    holder.row.TaskBody.setTextColor(
+                        if (task.completed) 0xFFB1B1B1.toInt() else 0xFF292929.toInt()
+                    )
+                    holder.row.TaskBody.paintFlags =
+                        if (task.completed) {
+                            holder.row.TaskBody.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                        } else {
+                            holder.row.TaskBody.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                        }
+                    holder.row.TaskCheckbox.contentDescription =
+                        if (task.completed) "取消完成" else getString(R.string.personal_mark_complete)
+                    holder.row.TaskCheckbox.setOnClickListener {
+                        store.setTaskCompleted(task.id, !task.completed)
+                        refresh()
+                    }
+                    holder.row.TaskBody.setOnClickListener { showTaskDialog(task) }
+                    holder.row.root.setOnLongClickListener {
+                        confirmDeleteTask(task)
+                        true
+                    }
+                }
             }
         }
     }
 
     companion object {
+        private const val SECTION = 0
+        private const val TASK = 1
         private const val STATE_TAB = "personal_selected_tab"
     }
 }
